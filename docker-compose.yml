@@ -1,0 +1,28 @@
+version: '3.8'
+services:
+  mongodb:
+    image: mongo:latest
+    volumes:
+      - ./mounted/mongodb:/data/db
+    ports:
+      - "27017:27017"
+    networks:
+      - app-network
+  app:
+    build: .
+    ports:
+      - "5000:5000"
+      - "3000:3000"
+    volumes:
+      - ./mounted/config:/mounted/config
+    depends_on:
+      - mongodb
+    environment:
+      - MONGODB_URI=mongodb://mongodb:27017/face_recognition_db
+    networks:
+      - app-network
+networks:
+  app-network:
+    driver: bridge
+volumes:
+  mongodb_data:
